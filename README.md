@@ -11,6 +11,35 @@ tray app. The app reads what this firmware exposes.
 > [`NOTICE`](NOTICE)). Community project, **not affiliated with or endorsed by
 > Keychron** or the QMK project.
 
+## Flash the prebuilt firmware (recommended)
+
+If you just want the feature on your keyboard, you don't need to build anything —
+download the ready-made firmware and flash it with a GUI tool.
+
+1. **Download** `keychron_k10_he_iso_keychron.bin` from the
+   [**Releases**](https://github.com/OutersSoftware/k10he-battery-firmware/releases)
+   page. *(This build is for the **K10 HE — ISO** layout.)*
+2. **Get [QMK Toolbox](https://github.com/qmk/qmk_toolbox/releases)** — the
+   friendliest flasher; it also installs the Windows DFU driver for you.
+3. In QMK Toolbox, click **Open** and pick the downloaded `.bin`.
+4. **Put the keyboard in bootloader mode:** unplug USB → set the side switch to
+   **Cable** → hold **Esc** → plug USB back in, then release Esc. QMK Toolbox
+   should print a `STM32 DFU device connected` line.
+5. Click **Flash**. When it finishes, the keyboard reboots into normal mode.
+
+> **Heads-up**
+> - This binary is for the **K10 HE ISO** layout. Flashing the wrong layout
+>   won't brick the board, but some keys will be mislabeled.
+> - Flashing modifies your keyboard's firmware (at your own risk). It is fully
+>   **reversible**: you can re-flash the stock Keychron firmware the same way
+>   (QMK Toolbox or the [Keychron Launcher](https://launcher.keychron.com/)).
+> - If flashing can't open the device, the DFU driver is missing — let QMK
+>   Toolbox install it (or use Zadig to bind **WinUSB** to the `STM32 BOOTLOADER`
+>   device), then retry.
+
+Prefer the command line, or want to rebuild it yourself? See
+[Build & flash](#build--flash) below.
+
 ## What it adds
 
 - A new raw-HID command **`KC_GET_BATTERY = 0xA4`** that returns: percentage,

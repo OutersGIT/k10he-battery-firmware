@@ -38,6 +38,10 @@ download the ready-made firmware and flash it with a GUI tool.
 > **Heads-up**
 > - Pick the `.bin` that matches your layout (**ANSI** or **ISO**). Flashing the
 >   wrong layout won't brick the board, but some keys will be mislabeled.
+> - **ANSI build: not yet tested on real hardware.** Only the **ISO** build has
+>   been verified on a physical keyboard. The ANSI `.bin` is built from the exact
+>   same shared battery code (the change is layout-agnostic), so it *should* work,
+>   but you'd be the first to try it — and flashing is fully reversible (below).
 > - Flashing modifies your keyboard's firmware (at your own risk). It is fully
 >   **reversible**: you can re-flash the stock Keychron firmware the same way
 >   (QMK Toolbox or the [Keychron Launcher](https://launcher.keychron.com/)).

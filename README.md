@@ -16,9 +16,17 @@ tray app. The app reads what this firmware exposes.
 If you just want the feature on your keyboard, you don't need to build anything —
 download the ready-made firmware and flash it with a GUI tool.
 
-1. **Download** `keychron_k10_he_iso_keychron.bin` from the
+1. **Download the build for your layout** from the
    [**Releases**](https://github.com/OutersSoftware/k10he-battery-firmware/releases)
-   page. *(This build is for the **K10 HE — ISO** layout.)*
+   page:
+
+   | Your K10 HE layout | File to download |
+   |---|---|
+   | **ANSI** (most common worldwide) | `keychron_k10_he_ansi_keychron.bin` |
+   | **ISO** | `keychron_k10_he_iso_keychron.bin` |
+
+   Not sure? ANSI has a horizontal rectangular **Enter** (and a 1-row left Shift);
+   ISO has a tall **Enter** spanning two rows (and a shorter left Shift).
 2. **Get [QMK Toolbox](https://github.com/qmk/qmk_toolbox/releases)** — the
    friendliest flasher; it also installs the Windows DFU driver for you.
 3. In QMK Toolbox, click **Open** and pick the downloaded `.bin`.
@@ -28,8 +36,8 @@ download the ready-made firmware and flash it with a GUI tool.
 5. Click **Flash**. When it finishes, the keyboard reboots into normal mode.
 
 > **Heads-up**
-> - This binary is for the **K10 HE ISO** layout. Flashing the wrong layout
->   won't brick the board, but some keys will be mislabeled.
+> - Pick the `.bin` that matches your layout (**ANSI** or **ISO**). Flashing the
+>   wrong layout won't brick the board, but some keys will be mislabeled.
 > - Flashing modifies your keyboard's firmware (at your own risk). It is fully
 >   **reversible**: you can re-flash the stock Keychron firmware the same way
 >   (QMK Toolbox or the [Keychron Launcher](https://launcher.keychron.com/)).
@@ -99,8 +107,9 @@ You need a QMK build environment — on Windows the easiest is **QMK MSYS**.
 
    ```bash
    /path/to/k10he-battery-firmware/scripts/build_k10he.sh
-   # or directly:
-   make keychron/k10_he/iso:keychron
+   # or directly, picking your layout:
+   make keychron/k10_he/ansi:keychron   # ANSI
+   make keychron/k10_he/iso:keychron    # ISO
    ```
 
    The helper script also fetches the required ChibiOS / LUFA / printf
@@ -110,13 +119,14 @@ You need a QMK build environment — on Windows the easiest is **QMK MSYS**.
    switch to **Cable** → hold **Esc** → plug USB back in), then:
 
    ```bash
-   /path/to/k10he-battery-firmware/scripts/flash_k10he.sh ./keychron_k10_he_iso_keychron.bin
+   /path/to/k10he-battery-firmware/scripts/flash_k10he.sh ./keychron_k10_he_ansi_keychron.bin
+   # (use ...iso_keychron.bin instead if your board is ISO)
    ```
 
    or load the `.bin` with **QMK Toolbox**.
 
-> The example targets the **ISO** layout (`keychron/k10_he/iso:keychron`). For
-> ANSI use the matching keymap target.
+> The change is layout-agnostic (it lives in shared raw-HID / battery code), so the
+> same patch builds **both** layouts — only the make target differs.
 
 ## Verify
 

@@ -1,0 +1,18 @@
+# Build artifacts
+*.bin
+*.hex
+*.elf
+*.uf2
+
+# Python (host client)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS cruft
+Thumbs.db
+.DS_Store
+
+# Local build scratch
+.build-temp/

@@ -1,0 +1,21 @@
+Keyboard Companion firmware (K10 HE battery over raw HID)
+=========================================================
+
+This repository contains modifications to QMK Firmware that add a custom
+raw-HID battery channel (command 0xA4) and a wireless "push" model for the
+Keychron K10 HE.
+
+It is a derivative work of QMK Firmware and is therefore distributed under the
+GNU General Public License, version 2 (see the LICENSE file).
+
+Upstream / attribution
+----------------------
+- QMK Firmware — https://github.com/qmk/qmk_firmware  (GPLv2)
+- Keychron QMK additions (keyboards/keychron/*) — Copyright Keychron / @lokher
+  (https://www.keychron.com), licensed GPLv2.
+
+The modified/added files keep their original Keychron/QMK copyright headers.
+The changes in this repository are contributed under the same license (GPLv2).
+
+This is a community project and is NOT affiliated with, authorized, or endorsed
+by Keychron or the QMK project.

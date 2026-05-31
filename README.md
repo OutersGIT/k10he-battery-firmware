@@ -4,7 +4,7 @@ QMK firmware modifications that let a host PC read the battery level of a
 **Keychron K10 HE** over a custom raw-HID channel — including over the **2.4 GHz
 dongle**, where a normal pull request is not bridged.
 
-This is the firmware side of the **[Keyboard Companion](https://github.com/OutersSoftware/keyboard-companion)**
+This is the firmware side of the **[Keyboard Companion](https://github.com/OutersGIT/keyboard-companion)**
 tray app. The app reads what this firmware exposes.
 
 > **Derivative of QMK Firmware → licensed GPLv2** (see [`LICENSE`](LICENSE) and
@@ -17,7 +17,7 @@ If you just want the feature on your keyboard, you don't need to build anything 
 download the ready-made firmware and flash it with a GUI tool.
 
 1. **Download the build for your layout** from the
-   [**Releases**](https://github.com/OutersSoftware/k10he-battery-firmware/releases)
+   [**Releases**](https://github.com/OutersGIT/k10he-battery-firmware/releases)
    page:
 
    | Your K10 HE layout | File to download |

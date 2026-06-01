@@ -1,0 +1,62 @@
+--- Keyboard model id in KC_GET_BATTERY reports ---
+Apply on top of 0001-k10he-battery-raw-hid.patch (or the matching firmware/ tree).
+
+Adds an optional model identifier as data[6] of the KC_GET_BATTERY report so the
+host can show the keyboard model even over the 2.4 GHz dongle (which otherwise
+exposes only its own generic HID strings, e.g. "Keychron Link"). KC_BATTERY_MODEL_ID
+is defined per-keyboard in config.h (here: 1 for the K10 HE); the shared header
+defaults it to 0 (unspecified) so other keyboards / older builds stay
+backwards-compatible. It MUST live in config.h, not a .c file, so the shared
+keychron_raw_hid.c (a separate translation unit) actually sees the value.
+
+diff --git a/keyboards/keychron/k10_he/config.h b/keyboards/keychron/k10_he/config.h
+--- a/keyboards/keychron/k10_he/config.h
++++ b/keyboards/keychron/k10_he/config.h
+@@ -18,6 +18,11 @@
+ 
+ #include "eeconfig_kb.h"
+ 
++/* Model identifier reported in KC_GET_BATTERY (data[6]) so the host can show
++ * the keyboard model even over the 2.4 GHz dongle. Defined here (config.h) so
++ * every translation unit, including the shared keychron_raw_hid.c, sees it. */
++#define KC_BATTERY_MODEL_ID 1
++
+ /* External EEPROM Configuration*/
+ #define I2C_DRIVER I2CD3
+ #define I2C1_SCL_PIN A8
+diff --git a/keyboards/keychron/common/keychron_raw_hid.h b/keyboards/keychron/common/keychron_raw_hid.h
+--- a/keyboards/keychron/common/keychron_raw_hid.h
++++ b/keyboards/keychron/common/keychron_raw_hid.h
+@@ -89,6 +89,13 @@ enum {
+ 
+ void kc_raw_hid_send(uint8_t src, uint8_t *data, uint8_t len);
+ 
++// Optional model identifier carried in KC_GET_BATTERY reports (data[6]).
++// Define per-keyboard in config.h so every translation unit agrees on it.
++// 0 means "unspecified / legacy firmware".
++#ifndef KC_BATTERY_MODEL_ID
++#    define KC_BATTERY_MODEL_ID 0
++#endif
++
+ #if defined(LK_WIRELESS_ENABLE) || defined(KC_BLUETOOTH_ENABLE)
+ void kc_battery_push(void);
+ #endif
+diff --git a/keyboards/keychron/common/keychron_raw_hid.c b/keyboards/keychron/common/keychron_raw_hid.c
+--- a/keyboards/keychron/common/keychron_raw_hid.c
++++ b/keyboards/keychron/common/keychron_raw_hid.c
+@@ -147,6 +147,7 @@ void kc_battery_push(void) {
+     data[3]                   = (bat_voltage >> 8) & 0xFF;
+     data[4]                   = battery_get_charging_state();
+     data[5]                   = get_transport();
++    data[6]                   = KC_BATTERY_MODEL_ID;
+     kc_raw_hid_send(RAW_HID_SRC_WIRELESS, data, RAW_EPSIZE);
+ }
+ #    endif
+@@ -198,6 +199,7 @@ bool kc_raw_hid_rx(uint8_t src, uint8_t *data, uint8_t length) {
+             data[3]              = (bat_voltage >> 8) & 0xFF;
+             data[4]              = battery_get_charging_state();
+             data[5]              = get_transport();
++            data[6]              = KC_BATTERY_MODEL_ID;
+         } break;
+ #    endif
+ 

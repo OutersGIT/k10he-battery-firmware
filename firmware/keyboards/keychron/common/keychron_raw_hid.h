@@ -46,8 +46,8 @@ enum {
     // Byte 1
     FEATURE_QUICK_START         = 0x01U << 8,
     FEATURE_NKRO                = 0x01U << 9,
-    FEATURE_BATTERY             = 0x01U << 10,
-};
+     FEATURE_BATTERY             = 0x01U << 10,
+ };
 
 enum {
     MISC_DFU_INFO            = 0x01U << 0,
@@ -88,6 +88,13 @@ enum {
 };
 
 void kc_raw_hid_send(uint8_t src, uint8_t *data, uint8_t len);
+
+// Optional model identifier carried in KC_GET_BATTERY reports (data[6]).
+// Define per-keyboard in config.h so every translation unit agrees on it.
+// 0 means "unspecified / legacy firmware".
+#ifndef KC_BATTERY_MODEL_ID
+#    define KC_BATTERY_MODEL_ID 0
+#endif
 
 #if defined(LK_WIRELESS_ENABLE) || defined(KC_BLUETOOTH_ENABLE)
 void kc_battery_push(void);

@@ -147,6 +147,7 @@ void kc_battery_push(void) {
     data[3]                   = (bat_voltage >> 8) & 0xFF;
     data[4]                   = battery_get_charging_state();
     data[5]                   = get_transport();
+    data[6]                   = KC_BATTERY_MODEL_ID;
     kc_raw_hid_send(RAW_HID_SRC_WIRELESS, data, RAW_EPSIZE);
 }
 #    endif
@@ -198,6 +199,7 @@ bool kc_raw_hid_rx(uint8_t src, uint8_t *data, uint8_t length) {
             data[3]              = (bat_voltage >> 8) & 0xFF;
             data[4]              = battery_get_charging_state();
             data[5]              = get_transport();
+            data[6]              = KC_BATTERY_MODEL_ID;
         } break;
 #    endif
 

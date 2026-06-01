@@ -1,0 +1,43 @@
+--- Battery voltage polling in Cable (USB) mode ---
+Apply on top of 0001-k10he-battery-raw-hid.patch (or the matching firmware/ tree).
+
+When the side switch is on Cable and USB is connected, keep calling battery_measure()
+so host raw-HID reads get fresh percentage/mV from the LK module (read-only UART
+query). Charging state was already live via BAT_CHARGING_PIN; this only fixes stale
+SoC while plugged in.
+
+diff --git a/keyboards/keychron/common/wireless/battery.c b/keyboards/keychron/common/wireless/battery.c
+--- a/keyboards/keychron/common/wireless/battery.c
++++ b/keyboards/keychron/common/wireless/battery.c
+@@ -209,8 +209,11 @@ void battery_timer_reset(void) {
+ 
+ void battery_task(void) {
+     uint32_t t = rtc_timer_elapsed_ms(bat_monitor_timer_buffer);
+-    if ((get_transport() & TRANSPORT_WIRELESS) && (wireless_get_state() == WT_CONNECTED || battery_power_on_sample())) {
++    bool     monitor_voltage = false;
++
++    if ((get_transport() & TRANSPORT_WIRELESS) && (wireless_get_state() == WT_CONNECTED || battery_power_on_sample())) {
++        monitor_voltage = true;
+ #if defined(BAT_CHARGING_PIN)
+         if (usb_power_connected() && t > VOLTAGE_MEASURE_INTERVAL) {
+             if (gpio_read_pin(BAT_CHARGING_PIN) == BAT_CHARGING_LEVEL)
+@@ -219,8 +222,15 @@ void battery_task(void) {
+                 lkbt51_update_bat_state(BAT_FULL_CHARGED);
+         }
+ #endif
++    } else if (get_transport() == TRANSPORT_USB && usb_power_connected()) {
++        /* Cable mode: poll the wireless module for cell voltage (read-only). */
++        monitor_voltage = true;
++    }
+ 
++    if (monitor_voltage) {
+         if ((battery_power_on_sample()
+ #if defined(LED_MATRIX_ENABLE) || defined(RGB_MATRIX_ENABLE)
+              && !indicator_is_enabled()
+@@ -238,7 +248,7 @@ void battery_task(void) {
+             battery_measure();
+             if (power_on_sample < VOLTAGE_POWER_ON_MEASURE_COUNT) power_on_sample++;
+         }
+     }
+ 
+     if ((bat_empty || critical_low) && usb_power_connected()) {

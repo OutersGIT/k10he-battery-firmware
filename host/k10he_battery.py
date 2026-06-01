@@ -86,11 +86,13 @@ def _parse_report(resp):
     if not resp or resp[0] != KC_GET_BATTERY:
         return None
     voltage = resp[2] | (resp[3] << 8)
+    model_id = resp[6] if len(resp) > 6 else 0
     return {
         "percentage": resp[1],
         "voltage_mv": voltage,
         "charging": resp[4],
         "transport": resp[5],
+        "model_id": model_id,
     }
 
 
@@ -116,11 +118,13 @@ def query_battery(dev_info):
 def format_result(data):
     charging = CHARGING_STATE.get(data["charging"], f"unknown ({data['charging']})")
     transport = TRANSPORT.get(data["transport"], f"unknown (0x{data['transport']:02X})")
+    model = data.get("model_id", 0)
     return (
         f"Battery: {data['percentage']}%  "
         f"({data['voltage_mv']} mV)  |  "
         f"State: {charging}  |  "
-        f"Link: {transport}"
+        f"Link: {transport}  |  "
+        f"Model ID: {model}"
     )
 
 

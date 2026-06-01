@@ -62,20 +62,47 @@ Prefer the command line, or want to rebuild it yourself? See
   sends the battery report over the 2.4 GHz link every couple of seconds. This
   is what makes the reading work through the dongle, which does not forward the
   host → keyboard raw-HID direction.
+- **Cable-mode voltage polling** (`0002` patch): while on **Cable** with USB
+  connected, the firmware still queries the LK module for cell voltage so
+  `KC_GET_BATTERY` over USB returns fresh %/mV (not only the last wireless
+  snapshot). Read-only; same interval as wireless. Apply `patches/0002-...` after
+  `0001`, or use the updated `firmware/` tree.
+- **Keyboard model id** (`0003` patch): an optional `model_id` byte added to the
+  `KC_GET_BATTERY` report so the host can show the keyboard model **even over the
+  2.4 GHz dongle** (the dongle otherwise exposes only its own generic HID name,
+  e.g. "Keychron Link"). `1` for the K10 HE, `0` (unspecified) for other boards.
 
-Report layout (`data[0..5]`): `0xA4`, `percentage`, `voltage_lo`, `voltage_hi`,
+Report layout (`data[0..6]`): `0xA4`, `percentage`, `voltage_lo`, `voltage_hi`,
 `charging_state` (0 = on battery, 1 = charging, 2 = full), `transport`
-(0x01 USB / 0x02 BT / 0x04 2.4 GHz).
+(0x01 USB / 0x02 BT / 0x04 2.4 GHz), `model_id`.
+
+`model_id` is a low byte that identifies the keyboard model when available.
+For the patched K10 HE builds in this repository it is `1`; other keyboards
+or older firmwares may leave it at `0` (unspecified). Host tools should treat
+missing bytes past `data[5]` as `0` for backwards compatibility. This lets the
+host show the keyboard model even over the 2.4 GHz dongle, which otherwise only
+exposes its own generic HID strings (e.g. "Keychron Link").
+
+> **Porting note:** `KC_BATTERY_MODEL_ID` must be defined in the keyboard's
+> `config.h`, **not** in a `.c` file. The report is assembled in the shared
+> `keychron_raw_hid.c`, so a `#define` placed in `k10_he.c` is invisible to it
+> (separate translation unit) and the model id silently stays `0`. The header
+> provides a `0` fallback via `#ifndef`.
 
 ## Repository layout
 
 ```
-patches/
-  0001-k10he-battery-raw-hid.patch   # the change as a unified diff (apply to QMK)
+patches/                             # apply in order on the Keychron QMK base
+  0001-k10he-battery-raw-hid.patch        # battery raw HID + push (apply to QMK)
+  0002-battery-voltage-on-usb-cable.patch # fresh %/mV in Cable mode (after 0001)
+  0003-keyboard-model-id.patch            # model_id in the report (after 0002)
 firmware/                            # the modified files, for reference/inspection
   keyboards/keychron/common/keychron_raw_hid.{c,h}
   keyboards/keychron/common/wireless/battery.{c,h}
   keyboards/keychron/k10_he/k10_he.c
+  keyboards/keychron/k10_he/config.h   # FRAGMENT: the KC_BATTERY_MODEL_ID 1 define
+                                       # only — merge it into the stock config.h,
+                                       # do NOT overwrite the real file
 scripts/
   build_k10he.sh                     # fetch submodules + build (run inside QMK)
   flash_k10he.sh                     # wait for DFU + flash over dfu-util
@@ -96,16 +123,19 @@ You need a QMK build environment — on Windows the easiest is **QMK MSYS**.
    # check out the 2025 Q3 branch/tag matching your board
    ```
 
-2. **Apply the patch:**
+2. **Apply the patches**, in order (`0001` → `0002` → `0003`):
 
    ```bash
-   git apply /path/to/k10he-battery-firmware/patches/0001-k10he-battery-raw-hid.patch
-   # or, without a git repo:
-   #   patch -p1 < /path/to/.../0001-k10he-battery-raw-hid.patch
+   for p in 0001-k10he-battery-raw-hid 0002-battery-voltage-on-usb-cable 0003-keyboard-model-id; do
+       git apply /path/to/k10he-battery-firmware/patches/$p.patch
+       # or, without a git repo:  patch -p1 < /path/to/.../$p.patch
+   done
    ```
 
-   (Alternatively, copy the files under `firmware/` over the matching paths in
-   your QMK checkout.)
+   Alternatively, copy the files under `firmware/` over the matching paths in
+   your QMK checkout — **except `k10_he/config.h`**, which is a *fragment* (only
+   the `KC_BATTERY_MODEL_ID` define): add that one line to the stock `config.h`
+   instead of overwriting it, or you'll lose the board's hardware configuration.
 
 3. **Build** (from the QMK root):
 

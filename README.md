@@ -23,7 +23,7 @@ A small QMK firmware mod that lets your PC read your Keychron **K10 HE**'s **bat
 
 ## **How it works**
 
-A custom raw-HID command (`KC_GET_BATTERY = 0xA4`) returns the battery percentage, voltage (mV), charging state, active transport and a keyboard `model_id`. Over USB the host *pulls* it; over the **2.4 GHz dongle** a normal host → keyboard pull is not bridged, so the keyboard *pushes* the report on its own every couple of seconds. (Bluetooth battery is read by the app from what Windows already exposes, not over this channel.)
+A custom raw-HID command (`KC_GET_BATTERY = 0xA4`) returns the battery percentage, voltage (mV), charging state, active transport and a keyboard `model_id` — which the app uses to label the connected keyboard, even over the 2.4 GHz dongle (which otherwise exposes only a generic name like "Keychron Link"). Over USB the host *pulls* it; over the **2.4 GHz dongle** a normal host → keyboard pull is not bridged, so the keyboard *pushes* the report on its own every couple of seconds. (Bluetooth battery is read by the app from what Windows already exposes, not over this channel.)
 
 > **Derivative of QMK Firmware → licensed GPLv2** (see [`LICENSE`](LICENSE) and
 > [`NOTICE`](NOTICE)). Community project, **not affiliated with or endorsed by

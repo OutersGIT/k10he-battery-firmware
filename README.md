@@ -1,11 +1,28 @@
 # K10 HE battery firmware (QMK, raw-HID)
 
-QMK firmware modifications that let a host PC read the battery level of a
-**Keychron K10 HE** over a custom raw-HID channel — including over the **2.4 GHz
-dongle**, where a normal pull request is not bridged.
+**What is this?** A small QMK firmware mod that lets your PC read your Keychron
+**K10 HE**'s **battery** *and* **model name** — over the **USB cable** and the
+**2.4 GHz dongle**. It's the keyboard side of the
+**[Keyboard Companion](https://github.com/OutersGIT/keyboard-companion)** app: flash
+this firmware, run the app, and you get a live battery readout (with the keyboard's
+name) in the Windows tray, whichever way the keyboard is connected.
 
-This is the firmware side of the **[Keyboard Companion](https://github.com/OutersGIT/keyboard-companion)**
-tray app. The app reads what this firmware exposes.
+**In plain terms, it makes the keyboard tell the PC:**
+
+- its **battery** — percentage, voltage and charging state;
+- its **model**, so the app can label the device correctly — even through the
+  2.4 GHz dongle, which otherwise only shows a generic name (e.g. "Keychron Link");
+- a **fresh** reading while plugged in on Cable (not just the last wireless
+  snapshot), which also lets the app show a sensible level while charging. *(The
+  "true charge while charging" correction itself lives in the app — this firmware
+  just provides the raw voltage + charging state it needs.)*
+
+**How it works (technical).** A custom raw-HID command
+(`KC_GET_BATTERY = 0xA4`) returns the battery percentage, voltage (mV), charging
+state, active transport and a keyboard `model_id`. Over USB the host *pulls* it;
+over the **2.4 GHz dongle** a normal host → keyboard pull is not bridged, so the
+keyboard *pushes* the report on its own every couple of seconds. (Bluetooth battery
+is read by the app from what Windows already exposes, not over this channel.)
 
 > **Derivative of QMK Firmware → licensed GPLv2** (see [`LICENSE`](LICENSE) and
 > [`NOTICE`](NOTICE)). Community project, **not affiliated with or endorsed by

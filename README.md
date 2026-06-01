@@ -16,6 +16,14 @@ tray app. The app reads what this firmware exposes.
 If you just want the feature on your keyboard, you don't need to build anything —
 download the ready-made firmware and flash it with a GUI tool.
 
+> **Easiest on Windows: flash from Keyboard Companion.** If you use the companion
+> app, you can flash this firmware straight from it — tray menu → **Flash firmware…**
+> → pick the `.bin`, then follow the on-screen bootloader steps (it shows a live
+> progress bar). It uses the same STM32 DFU mechanism as below and still needs the
+> WinUSB driver (which QMK Toolbox installs). Get it from the
+> [Keyboard Companion releases](https://github.com/OutersGIT/keyboard-companion/releases)
+> (v0.3.0+). Prefer a dedicated flasher or not on Windows? Use QMK Toolbox below.
+
 1. **Download the build for your layout** from the
    [**Releases**](https://github.com/OutersGIT/k10he-battery-firmware/releases)
    page:

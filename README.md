@@ -1,11 +1,9 @@
 # K10 HE battery firmware (QMK, raw-HID)
 
-**What is this?** A small QMK firmware mod that lets your PC read your Keychron
-**K10 HE**'s **battery** *and* **model name** — over the **USB cable** and the
-**2.4 GHz dongle**. It's the keyboard side of the
-**[Keyboard Companion](https://github.com/OutersGIT/keyboard-companion)** app: flash
-this firmware, run the app, and you get a live battery readout (with the keyboard's
-name) in the Windows tray, whichever way the keyboard is connected.
+## **What is this?**
+
+A small QMK firmware mod that lets your PC read your Keychron **K10 HE**'s **battery** *and* **model name** — over the **USB cable** and the **2.4 GHz dongle**. It's the keyboard side of the
+**[Keyboard Companion](https://github.com/OutersGIT/keyboard-companion)** app: flash this firmware, run the app, and you get a live battery readout (with the keyboard's name) in the Windows tray, whichever way the keyboard is connected.
 
 **In plain terms, it makes the keyboard tell the PC:**
 
@@ -17,12 +15,15 @@ name) in the Windows tray, whichever way the keyboard is connected.
   "true charge while charging" correction itself lives in the app — this firmware
   just provides the raw voltage + charging state it needs.)*
 
-**How it works (technical).** A custom raw-HID command
-(`KC_GET_BATTERY = 0xA4`) returns the battery percentage, voltage (mV), charging
-state, active transport and a keyboard `model_id`. Over USB the host *pulls* it;
-over the **2.4 GHz dongle** a normal host → keyboard pull is not bridged, so the
-keyboard *pushes* the report on its own every couple of seconds. (Bluetooth battery
-is read by the app from what Windows already exposes, not over this channel.)
+**Example image from Keyboard Companion:**
+
+<img width="327" height="311" alt="Tooltip" src="https://github.com/user-attachments/assets/50e8ad10-2204-4e13-ac8b-1db01ccfeaf2" />
+
+<p></p>
+
+## **How it works**
+
+A custom raw-HID command (`KC_GET_BATTERY = 0xA4`) returns the battery percentage, voltage (mV), charging state, active transport and a keyboard `model_id`. Over USB the host *pulls* it; over the **2.4 GHz dongle** a normal host → keyboard pull is not bridged, so the keyboard *pushes* the report on its own every couple of seconds. (Bluetooth battery is read by the app from what Windows already exposes, not over this channel.)
 
 > **Derivative of QMK Firmware → licensed GPLv2** (see [`LICENSE`](LICENSE) and
 > [`NOTICE`](NOTICE)). Community project, **not affiliated with or endorsed by
@@ -30,8 +31,7 @@ is read by the app from what Windows already exposes, not over this channel.)
 
 ## Flash the prebuilt firmware (recommended)
 
-If you just want the feature on your keyboard, you don't need to build anything —
-download the ready-made firmware and flash it with a GUI tool.
+If you just want the feature on your keyboard, you don't need to build anything — download the ready-made firmware and flash it with a GUI tool.
 
 > **Easiest on Windows: flash from Keyboard Companion.** If you use the companion
 > app, you can flash this firmware straight from it — tray menu → **Flash firmware…**

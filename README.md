@@ -2,17 +2,17 @@
 
 ## **What is this?**
 
-A small QMK firmware mod that lets your PC read your Keychron **K10 HE**'s **battery** *and* **model name** — over the **USB cable** and the **2.4 GHz dongle**. It's the keyboard side of the
+A small QMK firmware mod that lets your PC read your Keychron **K10 HE**'s **battery** *and* **model name**, over the **USB cable** and the **2.4 GHz dongle**. It's the keyboard side of the
 **[Keyboard Companion](https://github.com/OutersGIT/keyboard-companion)** app: flash this firmware, run the app, and you get a live battery readout (with the keyboard's name) in the Windows tray, whichever way the keyboard is connected.
 
 **In plain terms, it makes the keyboard tell the PC:**
 
-- its **battery** — percentage, voltage and charging state;
-- its **model**, so the app can label the device correctly — even through the
+- its **battery** -> percentage, voltage and charging state;
+- its **model**, so the app can label the device correctly -> even through the
   2.4 GHz dongle, which otherwise only shows a generic name (e.g. "Keychron Link");
 - a **fresh** reading while plugged in on Cable (not just the last wireless
   snapshot), which also lets the app show a sensible level while charging. *(The
-  "true charge while charging" correction itself lives in the app — this firmware
+  "true charge while charging" correction itself lives in the app -> this firmware
   just provides the raw voltage + charging state it needs.)*
 
 **Example image from Keyboard Companion:**
@@ -23,7 +23,7 @@ A small QMK firmware mod that lets your PC read your Keychron **K10 HE**'s **bat
 
 ## **How it works**
 
-A custom raw-HID command (`KC_GET_BATTERY = 0xA4`) returns the battery percentage, voltage (mV), charging state, active transport and a keyboard `model_id` — which the app uses to label the connected keyboard, even over the 2.4 GHz dongle (which otherwise exposes only a generic name like "Keychron Link"). Over USB the host *pulls* it; over the **2.4 GHz dongle** a normal host → keyboard pull is not bridged, so the keyboard *pushes* the report on its own every couple of seconds. (Bluetooth battery is read by the app from what Windows already exposes, not over this channel.)
+A custom raw-HID command (`KC_GET_BATTERY = 0xA4`) returns the battery percentage, voltage (mV), charging state, active transport and a keyboard `model_id`. This last one is used by the app to label the connected keyboard, even over the 2.4 GHz dongle (which otherwise exposes only a generic name like "Keychron Link"). Over USB the host *pulls* it; over the **2.4 GHz dongle** a normal host → keyboard pull is not bridged, so the keyboard *pushes* the report on its own every couple of seconds. (Bluetooth battery is read by the app from what Windows already exposes, not over this channel.)
 
 > **Derivative of QMK Firmware → licensed GPLv2** (see [`LICENSE`](LICENSE) and
 > [`NOTICE`](NOTICE)). Community project, **not affiliated with or endorsed by
@@ -31,10 +31,10 @@ A custom raw-HID command (`KC_GET_BATTERY = 0xA4`) returns the battery percentag
 
 ## Flash the prebuilt firmware (recommended)
 
-If you just want the feature on your keyboard, you don't need to build anything — download the ready-made firmware and flash it with a GUI tool.
+If you just want the feature on your keyboard, you don't need to build anything: download the ready-made firmware and flash it with a GUI tool.
 
 > **Easiest on Windows: flash from Keyboard Companion.** If you use the companion
-> app, you can flash this firmware straight from it — tray menu → **Flash firmware…**
+> app, you can flash this firmware straight from it: tray menu → **Flash firmware…**
 > → pick the `.bin`, then follow the on-screen bootloader steps (it shows a live
 > progress bar). It uses the same STM32 DFU mechanism as below and still needs the
 > WinUSB driver (which QMK Toolbox installs). Get it from the
@@ -52,8 +52,8 @@ If you just want the feature on your keyboard, you don't need to build anything 
 
    Not sure? ANSI has a horizontal rectangular **Enter** (and a 1-row left Shift);
    ISO has a tall **Enter** spanning two rows (and a shorter left Shift).
-2. **Get [QMK Toolbox](https://github.com/qmk/qmk_toolbox/releases)** — the
-   friendliest flasher; it also installs the Windows DFU driver for you.
+2. **Get [QMK Toolbox](https://github.com/qmk/qmk_toolbox/releases)**: the
+   friendliest flasher - it also installs the Windows DFU driver for you.
 3. In QMK Toolbox, click **Open** and pick the downloaded `.bin`.
 4. **Put the keyboard in bootloader mode:** unplug USB → set the side switch to
    **Cable** → hold **Esc** → plug USB back in, then release Esc. QMK Toolbox
@@ -66,11 +66,11 @@ If you just want the feature on your keyboard, you don't need to build anything 
 > - **ANSI build: not yet tested on real hardware.** Only the **ISO** build has
 >   been verified on a physical keyboard. The ANSI `.bin` is built from the exact
 >   same shared battery code (the change is layout-agnostic), so it *should* work,
->   but you'd be the first to try it — and flashing is fully reversible (below).
+>   but you'd be the first to try it (and flashing is fully reversible -> below).
 > - Flashing modifies your keyboard's firmware (at your own risk). It is fully
 >   **reversible**: you can re-flash the stock Keychron firmware the same way
 >   (QMK Toolbox or the [Keychron Launcher](https://launcher.keychron.com/)).
-> - If flashing can't open the device, the DFU driver is missing — let QMK
+> - If flashing can't open the device, the DFU driver is missing -> let QMK
 >   Toolbox install it (or use Zadig to bind **WinUSB** to the `STM32 BOOTLOADER`
 >   device), then retry.
 
@@ -126,7 +126,7 @@ firmware/                            # the modified files, for reference/inspect
   keyboards/keychron/common/wireless/battery.{c,h}
   keyboards/keychron/k10_he/k10_he.c
   keyboards/keychron/k10_he/config.h   # FRAGMENT: the KC_BATTERY_MODEL_ID 1 define
-                                       # only — merge it into the stock config.h,
+                                       # only -> merge it into the stock config.h,
                                        # do NOT overwrite the real file
 scripts/
   build_k10he.sh                     # fetch submodules + build (run inside QMK)
@@ -137,7 +137,7 @@ host/
 
 ## Build & flash
 
-You need a QMK build environment — on Windows the easiest is **QMK MSYS**.
+You need a QMK build environment -> on Windows the easiest is **QMK MSYS**.
 
 1. **Get the Keychron QMK base.** These changes target the Keychron QMK fork,
    2025 Q3 snapshot (the K10 HE lives in the Keychron tree):
@@ -158,7 +158,7 @@ You need a QMK build environment — on Windows the easiest is **QMK MSYS**.
    ```
 
    Alternatively, copy the files under `firmware/` over the matching paths in
-   your QMK checkout — **except `k10_he/config.h`**, which is a *fragment* (only
+   your QMK checkout - **except `k10_he/config.h`**, which is a *fragment* (only
    the `KC_BATTERY_MODEL_ID` define): add that one line to the stock `config.h`
    instead of overwriting it, or you'll lose the board's hardware configuration.
 
@@ -174,7 +174,7 @@ You need a QMK build environment — on Windows the easiest is **QMK MSYS**.
    The helper script also fetches the required ChibiOS / LUFA / printf
    submodules on first run.
 
-4. **Flash** — put the keyboard in bootloader mode (unplug USB → set the side
+4. **Flash**: put the keyboard in bootloader mode (unplug USB → set the side
    switch to **Cable** → hold **Esc** → plug USB back in), then:
 
    ```bash
@@ -185,7 +185,7 @@ You need a QMK build environment — on Windows the easiest is **QMK MSYS**.
    or load the `.bin` with **QMK Toolbox**.
 
 > The change is layout-agnostic (it lives in shared raw-HID / battery code), so the
-> same patch builds **both** layouts — only the make target differs.
+> same patch builds **both** layouts -> only the make target differs.
 
 ## Verify
 
